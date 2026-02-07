@@ -4,7 +4,13 @@ import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { UseSelector, useDispatch, useSelector } from "react-redux";
 import Tooltipmodal from "./metadata/tooltipmodal";
 import { editPart, editSection } from "@/redux/Slices/headerconnect";
-const HeaderConnector = ({ field }: any) => {
+import {
+  deletePart,
+  deleteSection,
+  handleSetPart,
+  handleSetSection,
+} from "@/helpers/function";
+const HeaderConnector = ({ field, index }: any) => {
   // const sections = useSelector((state: RootState) => state.metadata);
 
   const dispatch = useDispatch();
@@ -41,66 +47,89 @@ const HeaderConnector = ({ field }: any) => {
   };
 
   return (
-    <div className="relative">
-      {(field.part === null || "") && (
+    <div className="relative rounded-xl p-4 bg-neutral-secondary-soft shadow-sm space-y-4">
+      {/* Add button */}
+      {index !== 0 && (
         <button
-          className="bg-red-400 text-[20px]"
           onClick={() => setClicked((e) => !e)}
+          className="w-9 h-9 flex mx-auto items-center justify-center rounded-lg bg-brand text-white text-xl hover:scale-105 transition"
         >
           +
         </button>
       )}
+
+      {/* Tooltip */}
       {clicked && (
-        <div className="absolute">
+        <div className="absolute top-12 left-0 z-10">
           <Tooltipmodal handleClick={handleClik} />
         </div>
       )}
-      {(field.part !== null || "") && (
-        <div ref={modalRef}>
-          <div>
-            <label
-              htmlFor="visitors"
-              className="block mb-2.5 text-sm font-medium text-heading"
-            >
-              New Part
-            </label>
-            <input
-              type="text"
-              id="visitors"
-              name="part"
-              onChange={(e) => {
-                dispatch(editPart({ part: e.target.value, id: field.id }));
+
+      {/* Part input */}
+      <div className="flex flex-col justify-center items-center gap-2">
+        {(index === 0 || newPart) && (
+          <div className="flex gap-2">
+            <div ref={modalRef} className="space-y-1">
+              <label className="text-sm font-medium text-heading">
+                New Part
+              </label>
+              <input
+                type="text"
+                name="part"
+                value={field.part}
+                onChange={(e) =>
+                  handleSetPart(data, field, dispatch, editPart, e.target.value)
+                }
+                className="w-full px-3 py-2 text-sm border border-default-medium rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition"
+              />
+            </div>
+            <button
+              onClick={() => {
+                (deletePart(data, field, dispatch, editPart),
+                  setNewPart(false));
               }}
-              value={field.part}
-              className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
-              placeholder=""
-              required
-            />
+              className="text-red-600 pt-[26px]"
+            >
+              X
+            </button>
           </div>
-        </div>
-      )}
-      {(field.section !== null || " ") && (
-        <div ref={modalRef}>
-          <label
-            htmlFor="visitors"
-            className="block mb-2.5 text-sm font-medium text-heading"
-          >
-            New Section
-          </label>
-          <input
-            type="text"
-            name="section"
-            onChange={(e) => {
-              dispatch(editSection({ section: e.target.value, id: field.id }));
-            }}
-            value={field.section}
-            id="visitors"
-            className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
-            placeholder=""
-            required
-          />
-        </div>
-      )}
+        )}
+
+        {/* Section input */}
+        {(index === 0 || newSection || newPart) && (
+          <div className="flex gap-2">
+            <div ref={modalRef} className="space-y-1">
+              <label className="text-sm font-medium text-heading">
+                New Section
+              </label>
+              <input
+                type="text"
+                name="section"
+                value={field.section}
+                onChange={(e) =>
+                  handleSetSection(
+                    data,
+                    field,
+                    dispatch,
+                    editSection,
+                    e.target.value,
+                  )
+                }
+                className="w-full px-3 py-2 text-sm border border-default-medium rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition"
+              />
+            </div>
+            <button
+              onClick={() => {
+                (deleteSection(data, field, dispatch, editSection),
+                  setNewSection(false));
+              }}
+              className="text-red-600 pt-[26px]"
+            >
+              X
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
