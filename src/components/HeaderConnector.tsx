@@ -69,7 +69,7 @@ const HeaderConnector = ({ field, index }: any) => {
       <div className="flex flex-col justify-center items-center gap-2">
         {(index === 0 || newPart) && (
           <div className="flex gap-2">
-            <div ref={modalRef} className="space-y-1">
+            <div ref={modalRef} className="space-y-1 text-center">
               <label className="text-sm font-medium text-heading">
                 New Part
               </label>
@@ -80,7 +80,7 @@ const HeaderConnector = ({ field, index }: any) => {
                 onChange={(e) =>
                   handleSetPart(data, field, dispatch, editPart, e.target.value)
                 }
-                className="w-full px-3 py-2 text-sm border border-default-medium rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition"
+                className={`w-full px-3 py-2 text-sm ${newPart ? "border border-default-medium text-start" : " text-center "} rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition`}
               />
             </div>
             <button
@@ -88,7 +88,7 @@ const HeaderConnector = ({ field, index }: any) => {
                 (deletePart(data, field, dispatch, editPart),
                   setNewPart(false));
               }}
-              className="text-red-600 pt-[26px]"
+              className="text-red-600 pt-[20px]"
             >
               X
             </button>
@@ -98,7 +98,7 @@ const HeaderConnector = ({ field, index }: any) => {
         {/* Section input */}
         {(index === 0 || newSection || newPart) && (
           <div className="flex gap-2">
-            <div ref={modalRef} className="space-y-1">
+            <div ref={modalRef} className="space-y-1 text-center">
               <label className="text-sm font-medium text-heading">
                 New Section
               </label>
@@ -115,7 +115,7 @@ const HeaderConnector = ({ field, index }: any) => {
                     e.target.value,
                   )
                 }
-                className="w-full px-3 py-2 text-sm border border-default-medium rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition"
+                className={`w-full px-3 py-2 text-sm ${newSection ? "border border-default-medium text-start" : "text-center "} rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition`}
               />
             </div>
             <button
@@ -123,7 +123,7 @@ const HeaderConnector = ({ field, index }: any) => {
                 (deleteSection(data, field, dispatch, editSection),
                   setNewSection(false));
               }}
-              className="text-red-600 pt-[26px]"
+              className="text-red-600 pt-[20px]"
             >
               X
             </button>

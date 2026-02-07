@@ -1,4 +1,3 @@
-
 export const handleSetPart = (
   data: any,
   field: any,
@@ -36,7 +35,7 @@ export const deletePart = (
   editPart: any,
 ) => {
   const start: number = data.findIndex((item: any) => item.id === field.id);
-  if (start === 1) return;
+  if (start === 0) return;
   for (let i = start; i < data.length; i++) {
     if (data[i].part === field.part) {
       dispatch(editPart({ part: data[start - 1].part, id: data[i].id }));
@@ -51,7 +50,7 @@ export const deleteSection = (
   editSection: any,
 ) => {
   const start: number = data.findIndex((item: any) => item.id === field.id);
-  if (start === 1) return;
+  if (start === 0) return;
   for (let i = start; i < data.length; i++) {
     if (data[i].part === field.part && data[i].section === field.section) {
       dispatch(
@@ -60,4 +59,3 @@ export const deleteSection = (
     }
   }
 };
-
