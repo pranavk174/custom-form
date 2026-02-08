@@ -18,6 +18,15 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
     return acc;
   }, {});
 
+  const grouped2 = fields.reduce<Record<number, typeof fields>>((acc, item) => {
+    if (!acc[item.part]) {
+      acc[item.part] = [];
+    }
+
+    acc[item.part].push(item);
+    return acc;
+  }, {});
+
   console.log(grouped, "grouped....");
   const groupedArray = Object.entries(grouped).map(([part, items]) => ({
     part: Number(part),

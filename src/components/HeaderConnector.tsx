@@ -10,18 +10,32 @@ import {
   handleSetPart,
   handleSetSection,
 } from "@/helpers/function";
-const HeaderConnector = ({ field, index }: any) => {
+const HeaderConnector = ({ field, index, section }: any) => {
   // const sections = useSelector((state: RootState) => state.metadata);
 
   const dispatch = useDispatch();
   const [clicked, setClicked] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [newSection, setNewSection] = useState<boolean>(false);
   const [newPart, setNewPart] = useState<boolean>(false);
+  const inputRef1 = useRef<HTMLInputElement>(null);
+  const [metaData, setMetaData] = useState({
+    section: field.section,
+    part: field.part,
+  });
+  const inputRef2 = useRef<HTMLInputElement>(null);
+
+  const data = useSelector((state: RootState) => state.metadata);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target as Node)
+      ) {
         setClicked(false);
       }
     }
@@ -32,14 +46,10 @@ const HeaderConnector = ({ field, index }: any) => {
     };
   }, []);
 
-  const data = useSelector((state: RootState) => state.metadata);
-
-  console.log(newPart, "data....======", newSection);
   const handleClik = (d: string) => {
-    console.log(d, "d....");
     if (d === "part") {
-      setNewSection(true);
       setNewPart(true);
+      setNewSection(true); // Always set newSection true when adding new
       setClicked(false);
     } else if (d === "section") {
       setNewSection(true);
@@ -50,8 +60,9 @@ const HeaderConnector = ({ field, index }: any) => {
   return (
     <div className="relative rounded-xl p-4 bg-neutral-secondary-soft shadow-sm space-y-4">
       {/* Add button */}
-      {index !== 0 && (
+      {(index !== 0 || newSection || newPart) && (
         <button
+          ref={buttonRef}
           onClick={() => setClicked((e) => !e)}
           className="w-9 h-9 flex mx-auto items-center justify-center rounded-lg bg-brand text-white text-xl hover:scale-105 transition"
         >
@@ -61,7 +72,10 @@ const HeaderConnector = ({ field, index }: any) => {
 
       {/* Tooltip */}
       {clicked && (
-        <div className="absolute top-12 flex justify-center  w-full z-10">
+        <div
+          ref={modalRef}
+          className="absolute top-12 flex justify-center  w-full z-30"
+        >
           <Tooltipmodal handleClick={handleClik} />
         </div>
       )}
@@ -70,16 +84,19 @@ const HeaderConnector = ({ field, index }: any) => {
       <div className="flex flex-col justify-center items-center gap-2">
         {(index === 0 || newPart) && (
           <div className="flex justify-center gap-2 w-full">
-            <div ref={modalRef} className="  items-center flex text-center">
+            <div className="  items-center flex text-center">
               <label className="text-sm w-full font-medium text-heading">
                 {newPart ? " New Part" : "Part"}
               </label>
               <input
                 type="text"
+                onBlur={() =>
+                  handleSetPart(data, field, dispatch, editPart, metaData.part)
+                }
                 name="part"
-                value={field.part}
+                value={metaData.part}
                 onChange={(e) =>
-                  handleSetPart(data, field, dispatch, editPart, e.target.value)
+                  setMetaData((d) => ({ ...d, part: e.target.value }))
                 }
                 className={`w-full px-3 py-2 text-sm ${newPart ? "border border-default-medium text-start" : " text-center "} rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition`}
               />
@@ -87,7 +104,8 @@ const HeaderConnector = ({ field, index }: any) => {
             <button
               onClick={() => {
                 (deletePart(data, field, dispatch, editPart),
-                  setNewPart(false));
+                  setNewPart(false),
+                  setNewSection(true));
               }}
               className="text-red-600"
             >
@@ -99,23 +117,27 @@ const HeaderConnector = ({ field, index }: any) => {
         {/* Section input */}
         {(index === 0 || newSection || newPart) && (
           <div className="flex gap-2">
-            <div ref={modalRef} className="  items-center flex text-center">
+            <div className="  items-center flex text-center">
               <label className="text-sm w-full font-medium text-heading">
                 {newSection ? "  New Section" : "Section "}
               </label>
               <input
                 type="text"
                 name="section"
-                value={field.section}
+                value={metaData.section}
                 onChange={(e) =>
+                  setMetaData((d) => ({ ...d, section: e.target.value }))
+                }
+                onBlur={() => {
+                  console.log("on blur triggered.....");
                   handleSetSection(
                     data,
                     field,
                     dispatch,
                     editSection,
-                    e.target.value,
-                  )
-                }
+                    metaData.section,
+                  );
+                }}
                 className={`w-full px-3 py-2 text-sm ${newSection ? "border border-default-medium text-start" : "text-center "} rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition`}
               />
             </div>
