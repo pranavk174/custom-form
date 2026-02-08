@@ -42,19 +42,22 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
               return (
                 <div key={field.id}>
                   {" "}
-                  {/* {i !== 0 && (
-                    <div className="flex justify-center">
-                      {" "}
-                      <div className="h-[50px] w-[2px] border border-dashed"></div>
-                    </div>
-                  )} */}
                   <div
                     key={field.id}
                     className="relative rounded-xl p-4 bg-neutral-secondary-soft shadow-sm space-y-4"
                   >
                     {/* <span className="text-white"> {i}</span> */}
                     <HeaderConnector index={i} field={field} />
-                    <FieldPreview field={field} />
+                    {i !== 0 && (
+                      <div className="flex justify-center">
+                        {" "}
+                        <div className="h-[50px] w-[2px] border border-dashed"></div>
+                      </div>
+                    )}
+                    <div className="flex gap-3 items-center">
+                      <h4 className="font-semibold text-[25px]">{i}</h4>
+                      <FieldPreview field={field} />
+                    </div>
                   </div>
                   {i !== fields.length - 1 && (
                     <div className="flex justify-center">

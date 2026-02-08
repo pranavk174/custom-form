@@ -34,13 +34,14 @@ const HeaderConnector = ({ field, index }: any) => {
 
   const data = useSelector((state: RootState) => state.metadata);
 
-  console.log(data, "data....======");
+  console.log(newPart, "data....======", newSection);
   const handleClik = (d: string) => {
-    if (d === "section") {
+    console.log(d, "d....");
+    if (d === "part") {
       setNewSection(true);
-      setClicked(false);
-    } else if (d === "part") {
       setNewPart(true);
+      setClicked(false);
+    } else if (d === "section") {
       setNewSection(true);
       setClicked(false);
     }
@@ -60,7 +61,7 @@ const HeaderConnector = ({ field, index }: any) => {
 
       {/* Tooltip */}
       {clicked && (
-        <div className="absolute top-12 left-0 z-10">
+        <div className="absolute top-12 flex justify-center  w-full z-10">
           <Tooltipmodal handleClick={handleClik} />
         </div>
       )}
@@ -68,10 +69,10 @@ const HeaderConnector = ({ field, index }: any) => {
       {/* Part input */}
       <div className="flex flex-col justify-center items-center gap-2">
         {(index === 0 || newPart) && (
-          <div className="flex gap-2">
-            <div ref={modalRef} className="space-y-1 text-center">
-              <label className="text-sm font-medium text-heading">
-                New Part
+          <div className="flex justify-center gap-2 w-full">
+            <div ref={modalRef} className="  items-center flex text-center">
+              <label className="text-sm w-full font-medium text-heading">
+                {newPart ? " New Part" : "Part"}
               </label>
               <input
                 type="text"
@@ -88,7 +89,7 @@ const HeaderConnector = ({ field, index }: any) => {
                 (deletePart(data, field, dispatch, editPart),
                   setNewPart(false));
               }}
-              className="text-red-600 pt-[20px]"
+              className="text-red-600"
             >
               X
             </button>
@@ -98,9 +99,9 @@ const HeaderConnector = ({ field, index }: any) => {
         {/* Section input */}
         {(index === 0 || newSection || newPart) && (
           <div className="flex gap-2">
-            <div ref={modalRef} className="space-y-1 text-center">
-              <label className="text-sm font-medium text-heading">
-                New Section
+            <div ref={modalRef} className="  items-center flex text-center">
+              <label className="text-sm w-full font-medium text-heading">
+                {newSection ? "  New Section" : "Section "}
               </label>
               <input
                 type="text"
@@ -123,7 +124,7 @@ const HeaderConnector = ({ field, index }: any) => {
                 (deleteSection(data, field, dispatch, editSection),
                   setNewSection(false));
               }}
-              className="text-red-600 pt-[20px]"
+              className="text-red-600 "
             >
               X
             </button>
