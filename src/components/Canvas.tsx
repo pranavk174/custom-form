@@ -8,7 +8,7 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
     id: "canvas",
   });
 
-  console.log(fields, "fields");
+  // console.log(fields, "fields");
   const grouped = fields.reduce<Record<number, typeof fields>>((acc, item) => {
     if (!acc[item.part]) {
       acc[item.part] = [];
@@ -27,13 +27,13 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
     return acc;
   }, {});
 
-  console.log(grouped, "grouped....");
+  // console.log(grouped, "grouped....");
   const groupedArray = Object.entries(grouped).map(([part, items]) => ({
     part: Number(part),
     items,
   }));
 
-  console.log(groupedArray, "array");
+  // console.log(groupedArray, "array");
 
   return (
     <div
@@ -56,7 +56,7 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
                     className="relative rounded-xl p-4 bg-neutral-secondary-soft shadow-sm space-y-4"
                   >
                     {/* <span className="text-white"> {i}</span> */}
-                    <HeaderConnector index={i} field={field} />
+                    <HeaderConnector previous={files.items[i-1]}  index={i} field={field} />
                     {i !== 0 && (
                       <div className="flex justify-center">
                         {" "}

@@ -21,30 +21,34 @@ export default function Home() {
     const { active, over } = event;
     if (!over) return;
 
-    console.log(active, "active.....");
+    // console.log(active, "active.....");
     // active.id = dragged item type
     const type = active.id;
-
+    // console.log(data, "data==============");
     const section = data[data.length - 1]?.section ?? "A";
     const part = data[data.length - 1]?.part ?? 1;
+    const order = data[data.length - 1]?.order
+      ? data[data.length - 1]?.order + 1
+      : 1;
 
     const newField = {
       id: crypto.randomUUID(),
       type,
       part: part,
       section: section,
+      order: order,
     };
     dispatch(addField(newField));
 
     // setFields((prev) => [...prev, newField]);
   }
 
-  console.log(data, "fieldss");
+  // console.log(data, "fieldss");
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="flex h-screen gap-6 p-6">
         <Sidebar />
-        <Canvas metaData={metaData} setMetaData={setMetaData} fields={data} />
+        <Canvas fields={data} />
       </div>
     </DndContext>
   );

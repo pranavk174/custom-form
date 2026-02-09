@@ -5,7 +5,8 @@ export interface questionType {
   section: string;
   type: string;
   options?: string[];
-  answers?: string;
+  order: number;
+  answer?: string;
 }
 
 export interface metadatProps {

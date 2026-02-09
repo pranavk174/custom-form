@@ -1,3 +1,5 @@
+import { sortField } from "@/redux/Slices/headerconnect";
+
 export const handleSetPart = (
   data: any,
   field: any,
@@ -26,6 +28,14 @@ export const handleSetSection = (
       dispatch(editSection({ section: value, id: data[i].id }));
     }
   }
+  const sorted = [...data].sort((a, b) =>
+    String(a.part).localeCompare(String(b.part), undefined, {
+      numeric: true,
+      sensitivity: "base",
+    }),
+  );
+  console.log(sorted, "sorted......");
+  // dispatch(sortField(sorted));
 };
 
 export const deletePart = (

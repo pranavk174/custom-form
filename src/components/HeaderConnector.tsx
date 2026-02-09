@@ -1,6 +1,12 @@
 "use client";
 import { RootState } from "@/redux/store";
-import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
+import React, {
+  SyntheticEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { UseSelector, useDispatch, useSelector } from "react-redux";
 import Tooltipmodal from "./metadata/tooltipmodal";
 import { editPart, editSection } from "@/redux/Slices/headerconnect";
@@ -10,24 +16,52 @@ import {
   handleSetPart,
   handleSetSection,
 } from "@/helpers/function";
-const HeaderConnector = ({ field, index, section }: any) => {
-  // const sections = useSelector((state: RootState) => state.metadata);
-
+const HeaderConnector = ({ field, index, previous }: any) => {
   const dispatch = useDispatch();
   const [clicked, setClicked] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [newSection, setNewSection] = useState<boolean>(false);
   const [newPart, setNewPart] = useState<boolean>(false);
-  const inputRef1 = useRef<HTMLInputElement>(null);
-  const [metaData, setMetaData] = useState({
-    section: field.section,
-    part: field.part,
-  });
-  const inputRef2 = useRef<HTMLInputElement>(null);
-
   const data = useSelector((state: RootState) => state.metadata);
 
+  const [metaData, setMetaData] = useState({
+    section: field.section ?? data[index].section,
+    part: field.part ?? data[index].part,
+  });
+
+  useEffect(() => {
+    if (data[index]) {
+      setMetaData({
+        section: field.section ?? data[index].section,
+        part: field.part ?? data[index].part,
+      });
+    }
+  }, [
+    data[index],
+    data[index].part,
+    data[index].section,
+    field.section,
+    field.part,
+    index,
+  ]);
+
+  // Sync local state with Redux state
+
+  // console.log(
+  //   metaData,
+  //   "meta data",
+  //   previous,
+  //   "previous....",
+  //   field,
+  //   "field",
+  //   data,
+  //   "data==",
+  //   data[index].part,
+  //   "part",
+  //   data[index].section,
+  //   "section",
+  // );
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
@@ -90,9 +124,11 @@ const HeaderConnector = ({ field, index, section }: any) => {
               </label>
               <input
                 type="text"
-                onBlur={() =>
-                  handleSetPart(data, field, dispatch, editPart, metaData.part)
-                }
+                onBlur={() => {
+                  handleSetPart(data, field, dispatch, editPart, metaData.part);
+                  setNewPart(false);
+                  setNewSection(false);
+                }}
                 name="part"
                 value={metaData.part}
                 onChange={(e) =>
@@ -115,7 +151,11 @@ const HeaderConnector = ({ field, index, section }: any) => {
         )}
 
         {/* Section input */}
-        {(index === 0 || newSection || newPart) && (
+        {(index === 0 ||
+          newSection ||
+          newPart ||
+          (field.part === metaData.part &&
+            previous.section !== metaData.section)) && (
           <div className="flex gap-2">
             <div className="  items-center flex text-center">
               <label className="text-sm w-full font-medium text-heading">
@@ -137,6 +177,7 @@ const HeaderConnector = ({ field, index, section }: any) => {
                     editSection,
                     metaData.section,
                   );
+                  setNewSection(false);
                 }}
                 className={`w-full px-3 py-2 text-sm ${newSection ? "border border-default-medium text-start" : "text-center "} rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition`}
               />
