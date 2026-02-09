@@ -25,6 +25,8 @@ export default function Home() {
     setFields((prev) => [...prev, newField]);
   }
 
+  
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="flex h-screen gap-6 p-6">

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { metadatProps, questionType } from "@/types/formtypes";
+import { groupTogether } from "@/helpers/function";
 const initialState: questionType[] = [];
 
 // const sortByPart = (a: any, b: any) => {
@@ -45,7 +46,10 @@ const metaData = createSlice({
           : d,
       );
 
-      return updated.sort(sortByPart);
+      const arr = groupTogether(updated);
+      return arr;
+      // return updated.sort(sortByPart);
+      // return updated;
     },
 
     editPart: (state, action) => {
@@ -53,7 +57,10 @@ const metaData = createSlice({
         d.id === action.payload.id ? { ...d, part: action.payload.part } : d,
       );
 
-      return updated.sort(sortByPart);
+      const arr = groupTogether(updated);
+      return arr;
+      // return updated.sort(sortByPart);
+      // return updated;
     },
   },
 });

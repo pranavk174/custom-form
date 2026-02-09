@@ -8,21 +8,11 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
     id: "canvas",
   });
 
-  // console.log(fields, "fields");
+  console.log(fields, "fields");
   const grouped = fields.reduce<Record<number, typeof fields>>((acc, item) => {
     if (!acc[item.part]) {
       acc[item.part] = [];
     }
-
-    acc[item.part].push(item);
-    return acc;
-  }, {});
-
-  const grouped2 = fields.reduce<Record<number, typeof fields>>((acc, item) => {
-    if (!acc[item.part]) {
-      acc[item.part] = [];
-    }
-
     acc[item.part].push(item);
     return acc;
   }, {});
@@ -41,7 +31,6 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
       className={`flex-1  p-6 overflow-y-auto space-y-4 ${isOver ? "" : "bg-black"}`}
     >
       <h2 className="font-bold">Form Canvas</h2>
-
       {groupedArray.map((files: groupProps, i: number) => {
         console.log(files, "field......");
         return (
@@ -56,7 +45,11 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
                     className="relative rounded-xl p-4 bg-neutral-secondary-soft shadow-sm space-y-4"
                   >
                     {/* <span className="text-white"> {i}</span> */}
-                    <HeaderConnector previous={files.items[i-1]}  index={i} field={field} />
+                    <HeaderConnector
+                      previous={files.items[i - 1]}
+                      index={i}
+                      field={field}
+                    />
                     {i !== 0 && (
                       <div className="flex justify-center">
                         {" "}

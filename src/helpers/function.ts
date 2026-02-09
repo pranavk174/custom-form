@@ -1,5 +1,16 @@
 import { sortField } from "@/redux/Slices/headerconnect";
 
+export const groupTogether = (arr: any[]) => {
+  const map = new Map();
+  for (const item of arr) {
+    const key = String(item.part); // normalize
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(item);
+  }
+  return Array.from(map.values()).flat();
+};
+
+
 export const handleSetPart = (
   data: any,
   field: any,
@@ -7,9 +18,9 @@ export const handleSetPart = (
   editPart: any,
   value: any,
 ) => {
-  const start: number = data.findIndex((item: any) => item.id === field.id);
+  const start: number = data.findIndex((item: any) => item.id == field.id);
   for (let i = start; i < data.length; i++) {
-    if (data[i].part === field.part) {
+    if (data[i].part == field.part) {
       dispatch(editPart({ part: value, id: data[i].id }));
     }
   }
@@ -22,9 +33,9 @@ export const handleSetSection = (
   editSection: any,
   value: any,
 ) => {
-  const start: number = data.findIndex((item: any) => item.id === field.id);
+  const start: number = data.findIndex((item: any) => item.id == field.id);
   for (let i = start; i < data.length; i++) {
-    if (data[i].part === field.part && data[i].section === field.section) {
+    if (data[i].part == field.part && data[i].section == field.section) {
       dispatch(editSection({ section: value, id: data[i].id }));
     }
   }
@@ -34,7 +45,7 @@ export const handleSetSection = (
       sensitivity: "base",
     }),
   );
-  console.log(sorted, "sorted......");
+  // console.log(sorted, "sorted......");
   // dispatch(sortField(sorted));
 };
 
@@ -44,10 +55,10 @@ export const deletePart = (
   dispatch: any,
   editPart: any,
 ) => {
-  const start: number = data.findIndex((item: any) => item.id === field.id);
-  if (start === 0) return;
+  const start: number = data.findIndex((item: any) => item.id == field.id);
+  if (start == 0) return;
   for (let i = start; i < data.length; i++) {
-    if (data[i].part === field.part) {
+    if (data[i].part == field.part) {
       dispatch(editPart({ part: data[start - 1].part, id: data[i].id }));
     }
   }
@@ -59,10 +70,10 @@ export const deleteSection = (
   dispatch: any,
   editSection: any,
 ) => {
-  const start: number = data.findIndex((item: any) => item.id === field.id);
-  if (start === 0) return;
+  const start: number = data.findIndex((item: any) => item.id == field.id);
+  if (start == 0) return;
   for (let i = start; i < data.length; i++) {
-    if (data[i].part === field.part && data[i].section === field.section) {
+    if (data[i].part == field.part && data[i].section == field.section) {
       dispatch(
         editSection({ section: data[start - 1].section, id: data[i].id }),
       );

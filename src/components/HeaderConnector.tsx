@@ -48,20 +48,20 @@ const HeaderConnector = ({ field, index, previous }: any) => {
 
   // Sync local state with Redux state
 
-  // console.log(
-  //   metaData,
-  //   "meta data",
-  //   previous,
-  //   "previous....",
-  //   field,
-  //   "field",
-  //   data,
-  //   "data==",
-  //   data[index].part,
-  //   "part",
-  //   data[index].section,
-  //   "section",
-  // );
+  console.log(
+    metaData,
+    "meta data",
+    previous,
+    "previous....",
+    field,
+    "field",
+    data,
+    "data==",
+    data[index].part,
+    "part",
+    data[index].section,
+    "section",
+  );
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
