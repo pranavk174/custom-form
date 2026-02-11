@@ -51,6 +51,18 @@ const metaData = createSlice({
       // return updated.sort(sortByPart);
       // return updated;
     },
+    editSectionImage: (state, action) => {
+      const updated = state.map((d) =>
+        d.id === action.payload.id
+          ? { ...d, sectionImage: action.payload.sectionImage }
+          : d,
+      );
+
+      const arr = groupTogether(updated);
+      return arr;
+      // return updated.sort(sortByPart);
+      // return updated;
+    },
 
     editPart: (state, action) => {
       const updated = state.map((d) =>
@@ -62,9 +74,23 @@ const metaData = createSlice({
       // return updated.sort(sortByPart);
       // return updated;
     },
+
+    editType: (state, action) => {
+      console.log(action.payload, "payload...");
+      return state.map((d) =>
+        d.id === action.payload.id ? { ...d, type: action.payload.type } : d,
+      );
+    },
   },
 });
 
-export const { addField, deleteField, editPart, editSection, sortField } =
-  metaData.actions;
+export const {
+  addField,
+  deleteField,
+  editPart,
+  editSection,
+  sortField,
+  editType,
+  editSectionImage,
+} = metaData.actions;
 export default metaData.reducer;

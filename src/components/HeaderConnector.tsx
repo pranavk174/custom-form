@@ -9,7 +9,12 @@ import React, {
 } from "react";
 import { UseSelector, useDispatch, useSelector } from "react-redux";
 import Tooltipmodal from "./metadata/tooltipmodal";
-import { editPart, editSection } from "@/redux/Slices/headerconnect";
+import Uploader from "./Uploader";
+import {
+  editPart,
+  editSection,
+  editSectionImage,
+} from "@/redux/Slices/headerconnect";
 import {
   deletePart,
   deleteSection,
@@ -28,6 +33,7 @@ const HeaderConnector = ({ field, index, previous }: any) => {
   const [metaData, setMetaData] = useState({
     section: field.section ?? data[index].section,
     part: field.part ?? data[index].part,
+    sectionImage: field.sectionImage ?? data[index].sectionImage,
   });
 
   useEffect(() => {
@@ -35,18 +41,29 @@ const HeaderConnector = ({ field, index, previous }: any) => {
       setMetaData({
         section: field.section ?? data[index].section,
         part: field.part ?? data[index].part,
+        sectionImage: field.sectionImage ?? data[index].sectionImage,
       });
     }
   }, [
     data[index],
     data[index].part,
     data[index].section,
+    data[index].sectionImage,
+    field?.sectionImage,
     field.section,
     field.part,
     index,
   ]);
 
-  // Sync local state with Redux state
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const url = URL.createObjectURL(file);
+      console.log(url, "imageuyrl....");
+      dispatch(editSectionImage({ id: field.id, sectionImage: url }));
+    }
+  };
 
   console.log(
     metaData,
@@ -92,7 +109,7 @@ const HeaderConnector = ({ field, index, previous }: any) => {
   };
 
   return (
-    <div className="relative rounded-xl p-4 bg-neutral-secondary-soft shadow-sm space-y-4">
+    <div className="relative rounded-xl p-4 text-white space-y-4">
       {/* Add button */}
       {(index !== 0 || newSection || newPart) && (
         <button
@@ -156,41 +173,62 @@ const HeaderConnector = ({ field, index, previous }: any) => {
           newPart ||
           (field.part === metaData.part &&
             previous.section !== metaData.section)) && (
-          <div className="flex gap-2">
-            <div className="  items-center flex text-center">
-              <label className="text-sm w-full font-medium text-heading">
-                {newSection ? "  New Section" : "Section "}
-              </label>
-              <input
-                type="text"
-                name="section"
-                value={metaData.section}
-                onChange={(e) =>
-                  setMetaData((d) => ({ ...d, section: e.target.value }))
-                }
-                onBlur={() => {
-                  console.log("on blur triggered.....");
-                  handleSetSection(
-                    data,
-                    field,
-                    dispatch,
-                    editSection,
-                    metaData.section,
-                  );
-                  setNewSection(false);
+          <div>
+            {" "}
+            <div className="flex gap-2">
+              <div className="  items-center flex text-center">
+                <label className="text-sm w-full font-medium text-heading">
+                  {newSection ? "  New Section" : "Section "}
+                </label>
+                <input
+                  type="text"
+                  name="section"
+                  value={metaData.section}
+                  onChange={(e) =>
+                    setMetaData((d) => ({ ...d, section: e.target.value }))
+                  }
+                  onBlur={() => {
+                    console.log("on blur triggered.....");
+                    handleSetSection(
+                      data,
+                      field,
+                      dispatch,
+                      editSection,
+                      metaData.section,
+                    );
+                    setNewSection(false);
+                  }}
+                  className={`w-full px-3 py-2 text-sm ${newSection ? "border border-default-medium text-start" : "text-center "} rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition`}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  (deleteSection(data, field, dispatch, editSection),
+                    setNewSection(false));
                 }}
-                className={`w-full px-3 py-2 text-sm ${newSection ? "border border-default-medium text-start" : "text-center "} rounded-lg bg-neutral-secondary-medium focus:ring-2 focus:ring-brand focus:outline-none transition`}
-              />
+                className="text-red-600 "
+              >
+                X
+              </button>
             </div>
-            <button
-              onClick={() => {
-                (deleteSection(data, field, dispatch, editSection),
-                  setNewSection(false));
-              }}
-              className="text-red-600 "
-            >
-              X
-            </button>
+            <div className="flex gap-2 justify-center gap-3">
+              {" "}
+              <Uploader
+                preview={metaData.sectionImage}
+                handleChange={handleChange}
+              />
+              <button
+                onClick={() => {
+                  dispatch(
+                    editSectionImage({ id: field.id, sectionImage: null }),
+                    setMetaData((d) => ({ ...metaData, sectionImage: null })),
+                  );
+                }}
+                className="text-red-600 "
+              >
+                X
+              </button>
+            </div>
           </div>
         )}
       </div>
