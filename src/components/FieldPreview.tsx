@@ -1,8 +1,7 @@
 import React from "react";
 
 const FieldPreview = ({ field }: any) => {
-  const baseInputClass =
-    "w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-600 outline-none";
+  const baseInputClass ="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-600 outline-none";
 
   switch (field.type) {
     case "text":

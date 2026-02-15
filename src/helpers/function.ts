@@ -3,6 +3,7 @@ import { sortField } from "@/redux/Slices/headerconnect";
 export const groupTogether = (arr: any[]) => {
   const map = new Map();
   for (const item of arr) {
+    console.log(item, "itemssssss");
     const key = String(item.part); // normalize
     if (!map.has(key)) map.set(key, []);
     map.get(key).push(item);
@@ -10,6 +11,18 @@ export const groupTogether = (arr: any[]) => {
   return Array.from(map.values()).flat();
 };
 
+// export const groupTogether = (arr:any[])=>{
+//   const final = arr.reduce((acc, curr)=> {
+//     const key = String(curr.part)
+
+//     acc[key] = acc[key] || [] ;
+//     acc[key].push(curr)
+
+//     return acc
+//   },{} )
+
+//   return final
+// }
 
 export const handleSetPart = (
   data: any,

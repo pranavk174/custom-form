@@ -61,7 +61,7 @@ const HeaderConnector = ({ field, index, previous }: any) => {
     if (file) {
       const url = URL.createObjectURL(file);
       console.log(url, "imageuyrl....");
-      dispatch(editSectionImage({ id: field.id, sectionImage: url }));
+      dispatch(editSectionImage({ id: field.id, sectionImage: url ,section:field.section, part:field.part }));
     }
   };
 
@@ -211,7 +211,7 @@ const HeaderConnector = ({ field, index, previous }: any) => {
                 X
               </button>
             </div>
-            <div className="flex gap-2 justify-center gap-3">
+            <div className="flex gap-2 justify-center">
               {" "}
               <Uploader
                 preview={metaData.sectionImage}

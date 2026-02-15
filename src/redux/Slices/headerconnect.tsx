@@ -37,7 +37,7 @@ const metaData = createSlice({
       return action.payload;
     },
     deleteField: (state, action) => {
-      return state.filter((sec) => sec.section !== action.payload);
+      return state.filter((sec) => sec.id !== action.payload);
     },
     editSection: (state, action) => {
       const updated = state.map((d) =>
@@ -52,18 +52,26 @@ const metaData = createSlice({
       // return updated;
     },
     editSectionImage: (state, action) => {
-      const updated = state.map((d) =>
-        d.id === action.payload.id
-          ? { ...d, sectionImage: action.payload.sectionImage }
-          : d,
+      // const updated = state.map((d) => {
+      //   return d.part === action.payload.part &&
+      //     d.section === action.payload.section
+      //     ? { ...d, sectionImage: action.payload.sectionImage }
+      //     : d;
+      // });
+
+      const index = state.findIndex(
+        (d) =>
+          d.part === action.payload.part &&
+          d.section === action.payload.section,
       );
 
-      const arr = groupTogether(updated);
-      return arr;
-      // return updated.sort(sortByPart);
-      // return updated;
-    },
+      if (index !== -1) {
+        state[index].sectionImage = action.payload.sectionImage;
+      }
 
+      console.log(index, "index nhiu mila  ", state[index]);
+      return state;
+    },
     editPart: (state, action) => {
       const updated = state.map((d) =>
         d.id === action.payload.id ? { ...d, part: action.payload.part } : d,

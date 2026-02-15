@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useDispatch, UseDispatch } from "react-redux";
 import { Pencil, Trash2, MoreVertical, ChevronRight } from "lucide-react";
-import { editType } from "@/redux/Slices/headerconnect";
+import { deleteField, editType } from "@/redux/Slices/headerconnect";
 import { useEffect } from "react";
 export default function Canvas({ fields }: { fields: questionType[] }) {
   const { setNodeRef, isOver } = useDroppable({
@@ -21,6 +21,7 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
   });
 
   console.log(fields, "fields");
+  
   const grouped = fields.reduce<Record<number, typeof fields>>((acc, item) => {
     if (!acc[item.part]) {
       acc[item.part] = [];
@@ -121,7 +122,7 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
                           {/* Icons */}
                           <div className="flex items-center gap-4 text-gray-500">
                             <Pencil className="w-5 h-5 cursor-pointer hover:text-purple-500" />
-                            <Trash2 className="w-5 h-5 cursor-pointer hover:text-red-500" />
+                            <Trash2 onClick={()=>dispatch(deleteField(field.id))} className="w-5 h-5 cursor-pointer hover:text-red-500" />
                             <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer">
                               <MoreVertical className="w-5 h-5" />
                             </div>
