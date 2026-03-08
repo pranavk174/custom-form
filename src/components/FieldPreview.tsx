@@ -1,29 +1,29 @@
-import React from "react";
+import { addOptions, addQuestion } from "@/redux/Slices/headerconnect";
+import { RootState } from "@/redux/store";
+import { ChevronDown } from "lucide-react";
+import React, { useState } from "react";
+import { UseSelector, useDispatch, useSelector } from "react-redux";
+const FieldPreview = ({ field, question, option }: any) => {
+  const [options, setOptions] = useState([0]);
 
-const FieldPreview = ({ field }: any) => {
-  const baseInputClass ="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-600 outline-none";
+  const dispatch = useDispatch();
+  const baseInputClass =
+    "w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-600 outline-none";
 
   switch (field.type) {
     case "text":
-      return (
-        <input disabled placeholder="Text field" className={baseInputClass} />
-      );
+      return <input placeholder="Text field" className={baseInputClass} />;
 
     case "email":
       return (
-        <input
-          type="email"
-          disabled
-          placeholder="Email"
-          className={baseInputClass}
-        />
+        <input type="email" placeholder="Email" className={baseInputClass} />
       );
 
     case "password":
       return (
         <input
           type="password"
-          disabled
+          value={question}
           placeholder="Password"
           className={baseInputClass}
         />
@@ -32,8 +32,11 @@ const FieldPreview = ({ field }: any) => {
     case "number":
       return (
         <input
+          value={question}
           type="number"
-          disabled
+          onChange={(e) =>
+            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          }
           placeholder="Number"
           className={baseInputClass}
         />
@@ -43,7 +46,10 @@ const FieldPreview = ({ field }: any) => {
       return (
         <input
           type="tel"
-          disabled
+          onChange={(e) =>
+            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          }
+          value={question}
           placeholder="Phone number"
           className={baseInputClass}
         />
@@ -53,48 +59,146 @@ const FieldPreview = ({ field }: any) => {
       return (
         <input
           type="url"
-          disabled
+          onChange={(e) =>
+            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          }
+          value={question}
           placeholder="Website URL"
           className={baseInputClass}
         />
       );
 
     case "date":
-      return <input type="date" disabled className={baseInputClass} />;
+      return (
+        <input
+          onChange={(e) =>
+            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          }
+          value={question}
+          type="date"
+          className={baseInputClass}
+        />
+      );
 
     case "file":
-      return <input type="file" disabled className={baseInputClass} />;
+      return (
+        <input
+          onChange={(e) =>
+            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          }
+          value={question}
+          type="file"
+          className={baseInputClass}
+        />
+      );
 
     case "range":
-      return <input type="range" disabled className="w-full" />;
+      return (
+        <input
+          onChange={(e) =>
+            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          }
+          value={question}
+          type="range"
+          className="w-full"
+        />
+      );
 
     case "textarea":
       return (
         <textarea
-          disabled
+          onChange={(e) =>
+            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          }
+          value={question}
           placeholder="Textarea"
           className={`${baseInputClass} h-24 resize-none`}
         />
       );
 
-    case "select":
+    case "select": {
       return (
-        <select disabled className={baseInputClass}>
-          <option>Select option</option>
-          <option>Option 1</option>
-          <option>Option 2</option>
-        </select>
+        <div>
+          {" "}
+          <div
+            //  className="flex justify-between gap-3 items-center"
+            className={` flex justify-between gap-3 items-center ${baseInputClass}`}
+          >
+            {" "}
+            <input
+              type="text"
+              value={question}
+              onChange={(e) =>
+                dispatch(
+                  addQuestion({ id: field.id, question: e.target.value }),
+                )
+              }
+              placeholder={`Question`}
+              className={` bg-white w-[90%] text-gray-600 outline-none`}
+            />
+            <span className="">
+              {" "}
+              <ChevronDown />{" "}
+            </span>
+          </div>
+          {/* <select disabled className={baseInputClass}>
+            <option>Select option</option>
+          </select> */}
+          <div className="space-y-3 mt-2">
+            {options.map((o, i) => {
+              console.log(i, "o dataaaaa.");
+              return (
+                <div
+                  className="flex max-w-[300px] w-full  justify-between items-center"
+                  key={o}
+                >
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      console.log(e, "event triggereed..");
+                      dispatch(
+                        addOptions({ id: field.id, option: e.target.value }),
+                      );
+                    }}
+                    placeholder={`option ${i + 1}`}
+                    className={baseInputClass}
+                  />
+
+                  <button
+                    disabled={options.length === 1}
+                    onClick={() => {
+                      setOptions((prev) => prev.filter((d) => d !== o));
+                      // dispatch()
+                    }}
+                  >
+                    <span className="text-red-600 p-2">X</span>
+                  </button>
+                </div>
+              );
+            })}
+
+            <button
+              className="text-blue-400 cursor-pointer px-3 py-1 rounded-md"
+              onClick={() =>
+                setOptions((prev) => [...prev, crypto.randomUUID()])
+              }
+            >
+              Add Option
+            </button>
+          </div>
+        </div>
       );
+    }
 
     case "radio":
       return (
         <div className="flex flex-col gap-2">
           <label className="flex gap-2">
-            <input disabled type="radio" name="radio" />
+            <input type="text" name="radio" />
             Option 1
           </label>
           <label className="flex gap-2">
-            <input disabled type="radio" name="radio" />
+            <input type="text" name="radio" />
             Option 2
           </label>
         </div>
@@ -103,7 +207,7 @@ const FieldPreview = ({ field }: any) => {
     case "checkbox":
       return (
         <label className="flex gap-2">
-          <input disabled type="checkbox" />
+          <input type="checkbox" />
           Checkbox
         </label>
       );

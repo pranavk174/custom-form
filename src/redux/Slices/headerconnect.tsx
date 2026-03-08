@@ -39,6 +39,20 @@ const metaData = createSlice({
     deleteField: (state, action) => {
       return state.filter((sec) => sec.id !== action.payload);
     },
+    addQuestion: (state, action) => {
+      const { id, question } = action.payload;
+      const item = state.find((q) => q.id === id);
+      if (item) {
+        item.question = question;
+      }
+    },
+    addOptions: (state, action) => {
+      const { id, options } = action.payload;
+      const item = state.find((q) => q.id === id);
+      if (item && item.options) {
+        item.options.push(options);
+      }
+    },
     editSection: (state, action) => {
       const updated = state.map((d) =>
         d.id === action.payload.id
@@ -89,6 +103,9 @@ const metaData = createSlice({
         d.id === action.payload.id ? { ...d, type: action.payload.type } : d,
       );
     },
+    reorderFields: (state, action: PayloadAction<questionType[]>) => {
+      return action.payload;
+    },
   },
 });
 
@@ -100,5 +117,8 @@ export const {
   sortField,
   editType,
   editSectionImage,
+  addOptions,
+  addQuestion,
+  reorderFields,
 } = metaData.actions;
 export default metaData.reducer;

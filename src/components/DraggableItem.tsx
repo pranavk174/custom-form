@@ -4,19 +4,11 @@ import { useDraggable } from "@dnd-kit/core";
 export default function DraggableItem({ id, label }: any) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
+    data: {
+      type: 'sidebar-item',
+      fieldType: id
+    }
   });
-
-  console
-    .log
-    // attributes,
-    // "attributes",
-    // listeners,
-    // "listeners",
-    // setNodeRef,
-    // "setNodeRef",
-    // transform,
-    // "data........",
-    ();
 
   const style = {
     transform: transform

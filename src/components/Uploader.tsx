@@ -20,7 +20,7 @@ const Uploader = ({ handleChange, preview }: UploaderProps) => {
     <div>
       <div className="flex gap-2">
         <div className="  items-center flex text-center">
-          <div onClick={handleClick} className="w-full bg-red-400">
+          <div onClick={handleClick} className="w-full ">
             Section Image
             {preview && (
               <Image
