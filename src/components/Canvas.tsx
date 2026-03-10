@@ -6,10 +6,11 @@ import HeaderConnector from "./HeaderConnector";
 import { groupProps, inputs, questionType } from "@/types/formtypes";
 import FieldPreview from "./FieldPreview";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Pencil, Trash2, MoreVertical, GripVertical } from "lucide-react";
 import { deleteField, editType } from "@/redux/Slices/headerconnect";
 import InputCard from "./InputCard";
+import { RootState } from "@/redux/store";
 
 function SortableFieldItem({
   field,
@@ -74,6 +75,7 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
     id: "canvas",
   });
 
+
   const grouped = fields.reduce<Record<number, typeof fields>>((acc, item) => {
     if (!acc[item.part]) {
       acc[item.part] = [];
@@ -101,6 +103,7 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
                 key={field.id}
                 field={field}
                 index={i}
+
                 previousField={group.items[i - 1]}
                 isLast={i === group.items.length - 1}
               />

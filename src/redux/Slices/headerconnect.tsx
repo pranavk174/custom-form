@@ -3,29 +3,6 @@ import { metadatProps, questionType } from "@/types/formtypes";
 import { groupTogether } from "@/helpers/function";
 const initialState: questionType[] = [];
 
-// const sortByPart = (a: any, b: any) => {
-//   console.log(a, "=====", b);
-//   return String(a.part).localeCompare(String(b.part), undefined, {
-//     numeric: true,
-//     sensitivity: "base",
-//   });
-// };
-
-const sortByPart = (a: any, b: any) => {
-  const partCompare = String(a.part).localeCompare(String(b.part), undefined, {
-    numeric: true,
-    sensitivity: "base",
-  });
-
-  if (partCompare !== 0) return partCompare;
-
-  // optional tie-breaker (same part ke andar stable order)
-  return String(a.section).localeCompare(String(b.section), undefined, {
-    numeric: true,
-    sensitivity: "base",
-  });
-};
-
 const metaData = createSlice({
   name: "form-metadata",
   initialState,
@@ -41,16 +18,25 @@ const metaData = createSlice({
     },
     addQuestion: (state, action) => {
       const { id, question } = action.payload;
-      const item = state.find((q) => q.id === id);
+      // const item = state.find((q) => q.id === id);
+      const item = state.find((q) => {
+        // console.log(q?.options, "q data.....");
+        if (q.id === id) return q;
+      });
       if (item) {
         item.question = question;
       }
     },
     addOptions: (state, action) => {
-      const { id, options } = action.payload;
+      const { id, option } = action.payload;
+
       const item = state.find((q) => q.id === id);
-      if (item && item.options) {
-        item.options.push(options);
+
+      if (item) {
+        if (!item.options) {
+          item.options = [];
+        }
+        item.options.push(option);
       }
     },
     editSection: (state, action) => {

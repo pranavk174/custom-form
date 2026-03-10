@@ -4,19 +4,44 @@ import { ChevronDown } from "lucide-react";
 import React, { useState } from "react";
 import { UseSelector, useDispatch, useSelector } from "react-redux";
 const FieldPreview = ({ field, question, option }: any) => {
-  const [options, setOptions] = useState([0]);
-
+  const [options, setOptions] = useState<string[]>(
+    field.type === "select"
+      ? [crypto.randomUUID()]
+      : [crypto.randomUUID(), crypto.randomUUID()],
+  );
+  const [optionValues, setOptionValues] = useState<string[]>([""]);
+  const [questions, setQuestions] = useState(question);
+  console.log(question, "options........", option);
   const dispatch = useDispatch();
   const baseInputClass =
     "w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-600 outline-none";
 
   switch (field.type) {
     case "text":
-      return <input placeholder="Text field" className={baseInputClass} />;
+      return (
+        <input
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
+          }
+          placeholder="Text field"
+          className={baseInputClass}
+          value={questions}
+        />
+      );
 
     case "email":
       return (
-        <input type="email" placeholder="Email" className={baseInputClass} />
+        <input
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
+          }
+          type="email"
+          value={question}
+          placeholder="Email"
+          className={baseInputClass}
+        />
       );
 
     case "password":
@@ -25,6 +50,10 @@ const FieldPreview = ({ field, question, option }: any) => {
           type="password"
           value={question}
           placeholder="Password"
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
+          }
           className={baseInputClass}
         />
       );
@@ -34,8 +63,9 @@ const FieldPreview = ({ field, question, option }: any) => {
         <input
           value={question}
           type="number"
-          onChange={(e) =>
-            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
           }
           placeholder="Number"
           className={baseInputClass}
@@ -46,8 +76,9 @@ const FieldPreview = ({ field, question, option }: any) => {
       return (
         <input
           type="tel"
-          onChange={(e) =>
-            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
           }
           value={question}
           placeholder="Phone number"
@@ -59,8 +90,9 @@ const FieldPreview = ({ field, question, option }: any) => {
       return (
         <input
           type="url"
-          onChange={(e) =>
-            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
           }
           value={question}
           placeholder="Website URL"
@@ -71,8 +103,9 @@ const FieldPreview = ({ field, question, option }: any) => {
     case "date":
       return (
         <input
-          onChange={(e) =>
-            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
           }
           value={question}
           type="date"
@@ -83,8 +116,9 @@ const FieldPreview = ({ field, question, option }: any) => {
     case "file":
       return (
         <input
-          onChange={(e) =>
-            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
           }
           value={question}
           type="file"
@@ -95,8 +129,9 @@ const FieldPreview = ({ field, question, option }: any) => {
     case "range":
       return (
         <input
-          onChange={(e) =>
-            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
           }
           value={question}
           type="range"
@@ -107,8 +142,9 @@ const FieldPreview = ({ field, question, option }: any) => {
     case "textarea":
       return (
         <textarea
-          onChange={(e) =>
-            dispatch(addQuestion({ id: field.id, question: e.target.value }))
+          onChange={(e) => setQuestions(e.target.value)}
+          onBlur={() =>
+            dispatch(addQuestion({ id: field.id, question: questions }))
           }
           value={question}
           placeholder="Textarea"
@@ -145,37 +181,38 @@ const FieldPreview = ({ field, question, option }: any) => {
             <option>Select option</option>
           </select> */}
           <div className="space-y-3 mt-2">
-            {options.map((o, i) => {
-              console.log(i, "o dataaaaa.");
-              return (
-                <div
-                  className="flex max-w-[300px] w-full  justify-between items-center"
-                  key={o}
-                >
-                  <input
-                    type="text"
-                    onChange={(e) => {
-                      console.log(e, "event triggereed..");
-                      dispatch(
-                        addOptions({ id: field.id, option: e.target.value }),
-                      );
-                    }}
-                    placeholder={`option ${i + 1}`}
-                    className={baseInputClass}
-                  />
+            {options.map((o, i) => (
+              <div
+                key={o}
+                className="flex max-w-[300px] w-full justify-between items-center"
+              >
+                <input
+                  type="text"
+                  value={optionValues[i] || ""}
+                  className={baseInputClass}
+                  placeholder={`Option ${i + 1}`}
+                  onChange={(e) => {
+                    const updated = [...optionValues];
+                    updated[i] = e.target.value;
+                    setOptionValues(updated);
+                  }}
+                  onBlur={() =>
+                    dispatch(
+                      addOptions({ id: field.id, option: optionValues[i] }),
+                    )
+                  }
+                />
 
-                  <button
-                    disabled={options.length === 1}
-                    onClick={() => {
-                      setOptions((prev) => prev.filter((d) => d !== o));
-                      // dispatch()
-                    }}
-                  >
-                    <span className="text-red-600 p-2">X</span>
-                  </button>
-                </div>
-              );
-            })}
+                <button
+                  disabled={options.length === 1}
+                  onClick={() => {
+                    setOptions((prev) => prev.filter((d) => d !== o));
+                  }}
+                >
+                  <span className="text-red-600 p-2">X</span>
+                </button>
+              </div>
+            ))}
 
             <button
               className="text-blue-400 cursor-pointer px-3 py-1 rounded-md"
@@ -189,18 +226,41 @@ const FieldPreview = ({ field, question, option }: any) => {
         </div>
       );
     }
-
     case "radio":
       return (
         <div className="flex flex-col gap-2">
-          <label className="flex gap-2">
-            <input type="text" name="radio" />
-            Option 1
-          </label>
-          <label className="flex gap-2">
-            <input type="text" name="radio" />
-            Option 2
-          </label>
+          <input
+            type="text"
+            onChange={(e) =>
+              dispatch(addQuestion({ id: field.id, question: e.target.value }))
+            }
+            value={question}
+            placeholder="SIngle Choice Questions "
+            className={baseInputClass}
+          />
+          {options.map((o, i) => (
+            <div
+              key={o}
+              className="flex max-w-[300px] w-full justify-between items-center"
+            >
+              <input
+                type="text"
+                value={optionValues[i] || ""}
+                className={baseInputClass}
+                placeholder={`Option ${i + 1}`}
+                onChange={(e) => {
+                  const updated = [...optionValues];
+                  updated[i] = e.target.value;
+                  setOptionValues(updated);
+                }}
+                onBlur={() =>
+                  dispatch(
+                    addOptions({ id: field.id, option: optionValues[i] }),
+                  )
+                }
+              />
+            </div>
+          ))}
         </div>
       );
 

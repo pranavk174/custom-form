@@ -15,9 +15,6 @@ import {
 import { useDispatch, UseDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 const InputCard = ({ index, field, attributes, listeners }) => {
-  const { question, options: option } = useSelector(
-    (state: RootState) => state.metadata,
-  );
   const dispatch = useDispatch();
   return (
     <div className="flex gap-3 items-center">
@@ -81,7 +78,11 @@ const InputCard = ({ index, field, attributes, listeners }) => {
 
         <div className="mb-5">
           <p className="text-gray-700 font-medium mb-2">Question</p>
-          <FieldPreview field={field} />
+          <FieldPreview
+            question={field.question}
+            options={field.option}
+            field={field}
+          />
         </div>
 
         {field.type !== "checkbox" && (

@@ -1,5 +1,4 @@
 "use client";
-
 import {
   DndContext,
   DragEndEvent,
@@ -10,12 +9,13 @@ import {
   DragOverlay,
   DragStartEvent,
 } from "@dnd-kit/core";
+import { persistor } from "@/redux/store";
 import {
   arrayMove,
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Canvas from "@/components/Canvas";
 import { addField, reorderFields } from "@/redux/Slices/headerconnect";
@@ -40,6 +40,10 @@ export default function Home() {
   function handleDragStart(event: DragStartEvent) {
     setActiveId(event.active.id as string);
   }
+
+  useEffect(() => {
+    // persistor.purge();
+  }, []);
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -116,8 +120,9 @@ export default function Home() {
       <div className="bg-red-500 h-[5vh]">
         <Link
           href="/Response"
-          // onClick={() => router.push("/Response")}
-          className=""
+          onClick={() => {
+            persistor.persist();
+          }}
         >
           Save
         </Link>

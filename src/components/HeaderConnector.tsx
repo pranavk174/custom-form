@@ -60,25 +60,32 @@ const HeaderConnector = ({ field, index, previous }: any) => {
 
     if (file) {
       const url = URL.createObjectURL(file);
-      console.log(url, "imageuyrl....");
-      dispatch(editSectionImage({ id: field.id, sectionImage: url ,section:field.section, part:field.part }));
+      // console.log(url, "imageuyrl....");
+      dispatch(
+        editSectionImage({
+          id: field.id,
+          sectionImage: url,
+          section: field.section,
+          part: field.part,
+        }),
+      );
     }
   };
 
-  console.log(
-    metaData,
-    "meta data",
-    previous,
-    "previous....",
-    field,
-    "field",
-    data,
-    "data==",
-    data[index].part,
-    "part",
-    data[index].section,
-    "section",
-  );
+  // console.log(
+  //   metaData,
+  //   "meta data",
+  //   previous,
+  //   "previous....",
+  //   field,
+  //   "field",
+  //   data,
+  //   "data==",
+  //   data[index].part,
+  //   "part",
+  //   data[index].section,
+  //   "section",
+  // );
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
