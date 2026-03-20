@@ -35,9 +35,10 @@ export default function GlassTemplate() {
         return (
           <div key={input.id}>
             <p className="mb-2">{input.question}</p>
-            {input.options?.map((opt: any, i: number) => (
+            {input.options?.map((opt, i) => (
               <label key={opt.id} className="mr-4">
-                <input type="radio" name={input.id} value={opt} /> {opt}
+                <input type="radio" name={input.id} value={opt.option} />{" "}
+                {opt.option}
               </label>
             ))}
           </div>

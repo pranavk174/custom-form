@@ -58,13 +58,13 @@ export default function GradientTemplate() {
           <div key={input.id} className="col-span-2">
             <label className={labelStyle}>{input.question}</label>
             <div className="flex flex-wrap gap-4">
-              {input.options?.map((opt: string, i: number) => (
+              {input.options?.map((opt, i) => (
                 <label
-                  key={i}
+                  key={opt.id}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-white/70 backdrop-blur hover:bg-purple-50 cursor-pointer"
                 >
                   <input type="radio" name={input.id} />
-                  {opt}
+                  {opt.option}
                 </label>
               ))}
             </div>
