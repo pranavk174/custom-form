@@ -60,6 +60,8 @@ function SortableFieldItem({
           attributes={attributes}
           listeners={listeners}
         />
+
+       
       </div>
       {!isLast && (
         <div className="flex justify-center">

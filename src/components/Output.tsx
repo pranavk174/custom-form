@@ -33,22 +33,27 @@ export default function Form() {
   const temp = [
     {
       id: 1,
+      name: "GlassTemplate",
       item: <GlassTemplate />,
     },
     {
       id: 2,
+      name: "GradientTemplate",
       item: <GradientTemplate />,
     },
     {
       id: 3,
+      name: "CardTemplate",
       item: <CardTemplate />,
     },
     {
       id: 4,
+      name: "MinimalTemplate",
       item: <MinimalTemplate />,
     },
     {
       id: 5,
+      name: "premium form",
       item: <PremiumForm />,
     },
   ];
@@ -62,7 +67,9 @@ export default function Form() {
         onChange={(e) => setActive(Number(e.target.value))}
       >
         {temp.map((temp, i) => (
-          <option key={temp.id}>{temp.id}</option>
+          <option key={temp.id} value={temp.id}>
+            {temp.name}{" "}
+          </option>
         ))}
       </select>
 

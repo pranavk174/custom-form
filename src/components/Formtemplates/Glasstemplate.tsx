@@ -1,10 +1,71 @@
 import { RootState } from "@/redux/store";
+
 import { useSelector } from "react-redux";
 
 export default function GlassTemplate() {
   const data = useSelector((state: RootState) => state.metadata);
   const grouped = Object.groupBy(data, (user) => user.part);
   const final = Object.entries(grouped);
+
+  const renderField = (input: any) => {
+    console.log(input.options, "input option...");
+    switch (input.type) {
+      case "textarea":
+        return (
+          <textarea
+            key={input.id}
+            placeholder={input.question}
+            className="border p-3 rounded-lg w-full"
+          />
+        );
+
+      case "select":
+        return (
+          <select key={input.id} className="border p-3 rounded-lg w-full">
+            <option value="">Select {input.question}</option>
+            {input.options?.map((opt: any, i: number) => (
+              <option key={opt.id} value={opt.option}>
+                {opt.option}
+              </option>
+            ))}
+          </select>
+        );
+
+      case "radio":
+        return (
+          <div key={input.id}>
+            <p className="mb-2">{input.question}</p>
+            {input.options?.map((opt: any, i: number) => (
+              <label key={opt.id} className="mr-4">
+                <input type="radio" name={input.id} value={opt} /> {opt}
+              </label>
+            ))}
+          </div>
+        );
+
+      case "checkbox":
+        return (
+          <div key={input.id}>
+            <p className="mb-2">{input.question}</p>
+            {input.options?.map((opt: any, i: number) => (
+              <label key={i} className="mr-4">
+                <input type="checkbox" value={opt} /> {opt}
+              </label>
+            ))}
+          </div>
+        );
+
+      default:
+        return (
+          <input
+            key={input.id}
+            type={input.type}
+            placeholder={input.question}
+            className="border p-3 rounded-lg w-full"
+          />
+        );
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto bg-white/70 backdrop-blur-lg rounded-3xl p-10 shadow-xl">
@@ -24,14 +85,7 @@ export default function GlassTemplate() {
                 <h3 className="text-xl font-semibold mb-4">Section {s[0]}</h3>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                  {s[1].map((input: any) => (
-                    <input
-                      key={input.id}
-                      type={input.type}
-                      placeholder={input.question}
-                      className="border p-3 rounded-lg"
-                    />
-                  ))}
+                  {s[1].map((input: any) => renderField(input))}
                 </div>
               </div>
             ))}

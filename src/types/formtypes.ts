@@ -1,11 +1,16 @@
+import { Dispatch, SetStateAction, RefObject } from "react";
+import { Action } from "@reduxjs/toolkit";
+import { DraggableAttributes } from "@dnd-kit/core";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+
 export interface questionType {
-  question: string;
+  question?: string;
   part: number;
   id: string;
   section: string;
   sectionImage?: null;
   type: string;
-  options?: string[];
+  options?: optionProps[];
   order: number;
   answer?: string;
 }
@@ -18,6 +23,23 @@ export interface metadatProps {
 export interface groupProps {
   part: number;
   items: questionType[];
+}
+
+export interface InputCardProps {
+  index: number;
+  field: questionType;
+  attributes: DraggableAttributes;
+  listeners: SyntheticListenerMap | undefined;
+}
+
+export interface InputQestionProps {
+  id: string;
+  question: string;
+}
+
+export interface optionProps {
+  id: string;
+  option: string;
 }
 
 export const inputs = [
@@ -35,3 +57,26 @@ export const inputs = [
   { type: "radio", label: "Radio Group" },
   { type: "checkbox", label: "Checkbox" },
 ] as const;
+
+export interface FieldComponentProps {
+  field: questionType;
+  question: string;
+  option?: string[];
+  id: string;
+  inputRef: RefObject<HTMLInputElement | null>;
+  textareaRef: RefObject<HTMLTextAreaElement | null>;
+  optionRefs: RefObject<(HTMLInputElement | null)[]>;
+  placeholder?: string;
+  setOptions: React.Dispatch<React.SetStateAction<string[]>>;
+  options?: string[];
+  // addOptions: Dispatch<SetStateAction<string[]>>;
+  addOptions: (payload: optionProps) => Action;
+  addQuestion: (payload: InputQestionProps) => Action;
+  optionValues?: optionProps[];
+  setOptionValues: Dispatch<SetStateAction<optionProps[]>>;
+  // setOptionValues?: (payload: optionProps[]) => Action;
+
+  dispatch: Dispatch<Action>;
+
+  baseInputClass: string;
+}

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import FieldPreview from "./FieldPreview";
 import { GripVertical, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { editType, deleteField } from "@/redux/Slices/headerconnect";
-import { inputs } from "@/types/formtypes";
+import { InputCardProps, inputs } from "@/types/formtypes";
 
 import {
   Select,
@@ -12,16 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDispatch, UseDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-const InputCard = ({ index, field, attributes, listeners }) => {
+
+import { useDispatch } from "react-redux";
+
+const InputCard = ({ index, field, attributes, listeners }: InputCardProps) => {
   const dispatch = useDispatch();
+
   return (
     <div className="flex gap-3 items-center">
       <div className="w-full max-w-3xl mx-auto bg-gray-100 rounded-xl p-6 border border-gray-200">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            {/* Drag Handle */}
             <div
               {...attributes}
               {...listeners}
@@ -49,15 +50,14 @@ const InputCard = ({ index, field, attributes, listeners }) => {
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Theme" />
                 </SelectTrigger>
+
                 <SelectContent>
                   <SelectGroup>
-                    {inputs.map((f, i) => {
-                      return (
-                        <SelectItem value={f.type} key={i}>
-                          {f.label}
-                        </SelectItem>
-                      );
-                    })}
+                    {inputs.map((f, i) => (
+                      <SelectItem value={f.type} key={i}>
+                        {f.label}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -66,10 +66,12 @@ const InputCard = ({ index, field, attributes, listeners }) => {
 
           <div className="flex items-center gap-4 text-gray-500">
             <Pencil className="w-5 h-5 cursor-pointer hover:text-purple-500" />
+
             <Trash2
               onClick={() => dispatch(deleteField(field.id))}
               className="w-5 h-5 cursor-pointer hover:text-red-500"
             />
+
             <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer">
               <MoreVertical className="w-5 h-5" />
             </div>
@@ -79,8 +81,8 @@ const InputCard = ({ index, field, attributes, listeners }) => {
         <div className="mb-5">
           <p className="text-gray-700 font-medium mb-2">Question</p>
           <FieldPreview
-            question={field.question}
-            options={field.option}
+            question={field.question ?? ""}
+            option={field.options}
             field={field}
           />
         </div>
@@ -90,6 +92,7 @@ const InputCard = ({ index, field, attributes, listeners }) => {
             <p className="text-gray-700 font-medium mb-2">
               Description (optional)
             </p>
+
             <textarea
               placeholder="Add any extra instructions for the respondent"
               className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-400 outline-none resize-none"
@@ -102,4 +105,4 @@ const InputCard = ({ index, field, attributes, listeners }) => {
   );
 };
 
-export default InputCard;
+export default memo(InputCard);

@@ -7,7 +7,7 @@ export default function MinimalTemplate() {
   const final = Object.entries(grouped);
 
   return (
-    <div className="max-w-3xl mx-auto p-8">
+    <div className="max-w-3xl mx-auto mt-2">
       <h1 className="text-blue-500 font-bold text-3xl">Minimal Template </h1>
       {final.map((p: any) => {
         const sorted = Object.groupBy(p[1], (u: any) => u.section);

@@ -3,7 +3,7 @@ import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
 
-export default function PremiumForm() {
+export default function DynamicForm() {
   const [formData, setFormData] = useState<any>({});
   const [rangeValue, setRangeValue] = useState(5);
 
@@ -26,6 +26,8 @@ export default function PremiumForm() {
   const renderInput = (input: any) => {
     const name = input.type;
     const options = input.options;
+
+    console.log(options, "options data....");
     const base =
       "w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200";
 
@@ -44,9 +46,10 @@ export default function PremiumForm() {
         return (
           <select name={name} onChange={handleChange} className={base}>
             {options.map((op, i) => {
+              console.log(op, "optionsss......");
               return (
-                <option key={op} value={op}>
-                  {op}
+                <option key={op.id} value={op.option}>
+                  {op.option}
                 </option>
               );
             })}
@@ -57,14 +60,17 @@ export default function PremiumForm() {
         return (
           <div className="flex gap-6 pt-2">
             {options.map((g, i) => (
-              <label key={g} className="flex items-center gap-2 cursor-pointer">
+              <label
+                key={g.id}
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <input
                   type="radio"
                   name={name}
-                  value={g}
+                  value={g.option}
                   onChange={handleChange}
                 />
-                {g}
+                {g.option}
               </label>
             ))}
           </div>
@@ -116,7 +122,7 @@ export default function PremiumForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 flex justify-center items-center p-10">
+    <div className=" bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 flex justify-center items-center ">
       <div className="w-full max-w-4xl bg-white/80 backdrop-blur-md shadow-2xl rounded-3xl p-10 border border-white/50">
         <h1 className="text-4xl font-bold text-center mb-10 text-gray-800">
           Dynamic Form Builder
@@ -128,6 +134,7 @@ export default function PremiumForm() {
             const sorted = Object.groupBy(d, (pu) => pu?.section);
             const done = Object.entries(sorted);
 
+            console.log(d, "dd======");
             return (
               <div key={idx} className="space-y-6">
                 <div className="border-b pb-3">

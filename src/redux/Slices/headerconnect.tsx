@@ -28,15 +28,32 @@ const metaData = createSlice({
       }
     },
     addOptions: (state, action) => {
-      const { id, option } = action.payload;
+      const { id, option: o, oid } = action.payload;
 
       const item = state.find((q) => q.id === id);
+
+      const opt = {
+        option: o,
+        id: oid,
+      };
 
       if (item) {
         if (!item.options) {
           item.options = [];
         }
-        item.options.push(option);
+        const isExists = item.options.some((d) => d.id === oid);
+
+        if (item.options) {
+          if (isExists) {
+            item.options.map((d) => {
+              if (d.id === oid) {
+                return (d.option = o);
+              }
+            });
+          } else {
+            item.options.push(opt);
+          }
+        }
       }
     },
     editSection: (state, action) => {
