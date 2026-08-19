@@ -55,18 +55,18 @@ const Dropdown = ({
           >
             <input
               type="text"
-              value={optionValues[i] || ""}
+              value={optionValues[i].option || ""}
               className={baseInputClass}
               placeholder={`Option ${i + 1}`}
               onChange={(e) => {
                 const updated = [...optionValues];
                 console.log(updated, "updated...");
-                updated[i] = e.target.value;
+                updated[i].option = e.target.value;
                 setOptionValues(updated);
               }}
               onBlur={() =>
                 dispatch(
-                  addOptions({ id: id, option: optionValues[i], oid: o }),
+                  addOptions({ id: id, option: optionValues[i].option }),
                 )
               }
             />

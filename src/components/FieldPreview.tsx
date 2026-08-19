@@ -1,6 +1,6 @@
 import { addOptions, addQuestion } from "@/redux/Slices/headerconnect";
 import { RootState } from "@/redux/store";
-import { ChevronDown } from "lucide-react";
+
 import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import Input from "./Input";
@@ -14,7 +14,7 @@ import { FieldComponentProps, optionProps, questionType } from "@/types/formtype
 type Props = {
   field: questionType;
   question: string;
-  option?: string[];
+  option?: optionProps[];
 };
 
 const FieldPreview = ({ field, question, option }: Props) => {
@@ -46,7 +46,7 @@ const FieldPreview = ({ field, question, option }: Props) => {
     date: Input,
     file: Input,
     range: Input,
-    textarea:Input,
+    textarea: Input,
     select: Dropdown,
     radio: Radio,
   };

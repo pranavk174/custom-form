@@ -61,7 +61,7 @@ export const inputs = [
 export interface FieldComponentProps {
   field: questionType;
   question: string;
-  option?: string[];
+  option?: optionProps[];
   id: string;
   inputRef: RefObject<HTMLInputElement | null>;
   textareaRef: RefObject<HTMLTextAreaElement | null>;

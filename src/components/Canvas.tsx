@@ -7,10 +7,11 @@ import { groupProps, inputs, questionType } from "@/types/formtypes";
 import FieldPreview from "./FieldPreview";
 
 import { useDispatch, useSelector } from "react-redux";
-import { Pencil, Trash2, MoreVertical, GripVertical } from "lucide-react";
-import { deleteField, editType } from "@/redux/Slices/headerconnect";
+
+
 import InputCard from "./InputCard";
 import { RootState } from "@/redux/store";
+import { useMemo } from "react";
 
 function SortableFieldItem({
   field,
@@ -61,7 +62,7 @@ function SortableFieldItem({
           listeners={listeners}
         />
 
-       
+
       </div>
       {!isLast && (
         <div className="flex justify-center">
@@ -78,18 +79,22 @@ export default function Canvas({ fields }: { fields: questionType[] }) {
   });
 
 
-  const grouped = fields.reduce<Record<number, typeof fields>>((acc, item) => {
-    if (!acc[item.part]) {
-      acc[item.part] = [];
-    }
-    acc[item.part].push(item);
-    return acc;
-  }, {});
+  const grouped = useMemo(() => {
+    return fields.reduce<Record<number, typeof fields>>((acc, item) => {
+      if (!acc[item.part]) {
+        acc[item.part] = [];
+      }
+      acc[item.part].push(item);
+      return acc;
+    }, {})
+  }, [fields]);
 
-  const groupedArray = Object.entries(grouped).map(([part, items]) => ({
-    part: Number(part),
-    items,
-  }));
+  const groupedArray = useMemo(() => {
+    return Object.entries(grouped).map(([part, items]) => ({
+      part: Number(part),
+      items,
+    }))
+  }, [grouped]);
 
   return (
     <div

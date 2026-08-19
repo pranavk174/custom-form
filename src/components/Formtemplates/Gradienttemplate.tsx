@@ -1,4 +1,5 @@
 import { RootState } from "@/redux/store";
+import { questionType } from "@/types/formtypes";
 import { useSelector } from "react-redux";
 
 export default function GradientTemplate() {
@@ -6,7 +7,7 @@ export default function GradientTemplate() {
   const grouped = Object.groupBy(data, (user) => user.part);
   const final = Object.entries(grouped);
 
-  const renderInput = (input: any) => {
+  const renderInput = (input: questionType) => {
     console.log(input, "input data...");
     const baseStyle =
       "w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-400 focus:outline-none transition bg-white/70 backdrop-blur-md shadow-sm";
@@ -76,13 +77,13 @@ export default function GradientTemplate() {
           <div key={input.id} className="col-span-2">
             <label className={labelStyle}>{input.question}</label>
             <div className="flex flex-wrap gap-4">
-              {input.options?.map((opt: string, i: number) => (
+              {input.options?.map((opt) => (
                 <label
-                  key={i}
+                  key={opt.id}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-white/70 backdrop-blur hover:bg-pink-50 cursor-pointer"
                 >
                   <input type="checkbox" />
-                  {opt}
+                  {opt.option}
                 </label>
               ))}
             </div>
@@ -114,8 +115,9 @@ export default function GradientTemplate() {
     <div className="min-h-screen bg-gradient-to-br from-purple-200 via-pink-200 to-blue-200 p-10">
       <h1 className="text-blue-500 font-bold text-3xl">Gradient Template </h1>
       <div className="max-w-5xl mx-auto">
-        {final.map((p: any) => {
-          const sorted = Object.groupBy(p[1], (u: any) => u.section);
+        {final.map((p) => {
+          if (!p[1]) return
+          const sorted = Object.groupBy(p[1], (u) => u.section);
           const sections = Object.entries(sorted);
 
           return (
@@ -124,7 +126,7 @@ export default function GradientTemplate() {
                 Part {p[0]}
               </h2>
 
-              {sections.map((s: any) => (
+              {sections.map((s) => (
                 <div
                   key={s[0]}
                   className="bg-white rounded-2xl shadow-lg p-8 mb-6"
@@ -132,7 +134,7 @@ export default function GradientTemplate() {
                   <h3 className="text-xl font-semibold mb-6">Section {s[0]}</h3>
 
                   <div className="grid md:grid-cols-2 gap-6">
-                    {s[1].map((input: any) => (
+                    {s[1] && s[1].map((input) => (
                       <div key={input.id} className="flex flex-col gap-2">
                         {renderInput(input)}
                       </div>

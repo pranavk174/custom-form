@@ -1,4 +1,6 @@
+import { logger } from "@/lib/utils";
 import { RootState } from "@/redux/store";
+import { questionType } from "@/types/formtypes";
 import { useSelector } from "react-redux";
 
 export default function CardTemplate() {
@@ -6,7 +8,7 @@ export default function CardTemplate() {
   const grouped = Object.groupBy(data, (user) => user.part);
   const final = Object.entries(grouped);
 
-  const renderInput = (input: any) => {
+  const renderInput = (input: questionType) => {
     console.log(input, "input data...");
     const baseStyle =
       "w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-400 focus:outline-none transition bg-white/70 backdrop-blur-md shadow-sm";
@@ -58,13 +60,13 @@ export default function CardTemplate() {
           <div key={input.id} className="col-span-2">
             <label className={labelStyle}>{input.question}</label>
             <div className="flex flex-wrap gap-4">
-              {input.options?.map((opt: string, i: number) => (
+              {input.options?.map((opt) => (
                 <label
-                  key={i}
+                  key={opt.id}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-white/70 backdrop-blur hover:bg-purple-50 cursor-pointer"
                 >
                   <input type="radio" name={input.id} />
-                  {opt}
+                  {opt.option}
                 </label>
               ))}
             </div>
@@ -76,13 +78,13 @@ export default function CardTemplate() {
           <div key={input.id} className="col-span-2">
             <label className={labelStyle}>{input.question}</label>
             <div className="flex flex-wrap gap-4">
-              {input.options?.map((opt: string, i: number) => (
+              {input.options?.map((opt) => (
                 <label
-                  key={i}
+                  key={opt.id}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-white/70 backdrop-blur hover:bg-pink-50 cursor-pointer"
                 >
                   <input type="checkbox" />
-                  {opt}
+                  {opt.option}
                 </label>
               ))}
             </div>
@@ -111,22 +113,24 @@ export default function CardTemplate() {
     }
   };
   return (
-    <div className=" w-full">
+    <div className=" w-full bg-red-400">
       {" "}
       <h1 className="text-blue-500  font-bold text-3xl"> Card Template </h1>
       <div className="grid md:grid-cols-2 w-full  gap-6">
-        {final.map((p: any) => {
-          const sorted = Object.groupBy(p[1], (u: any) => u.section);
+        {final.map((p) => {
+          if (!p[1]) return
+          const sorted = Object.groupBy(p[1], (u) => u.section);
           const sections = Object.entries(sorted);
+          logger.log(sorted, "sorted dataaaaaaa", p)
           return (
             <div key={p[0]} className="bg-white w-full shadow rounded-xl p-6">
               <h2 className="text-xl font-bold mb-4">Part {p[0]}</h2>
 
-              {sections.map((s: any) => (
+              {sections.map((s) => (
                 <div key={s[0]} className="w-full">
                   <h3 className="font-semibold mb-3">Section {s[0]}</h3>
 
-                  {s[1].map((input: any) => (
+                  {s[1] && s[1].map((input) => (
                     <div
                       key={input.id}
                       className="flex w-full  flex-col space-y-4"

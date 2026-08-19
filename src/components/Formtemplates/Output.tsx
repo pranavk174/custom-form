@@ -1,29 +1,30 @@
 "use client";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
-import React, { useState } from "react";
+import React, { ChangeEventHandler, useState } from "react";
+import { questionType } from "@/types/formtypes";
 
 export default function DynamicForm() {
-  const [formData, setFormData] = useState<any>({});
+  // const [formData, setFormData] = useState<any>({});
   const [rangeValue, setRangeValue] = useState(5);
 
   const data = useSelector((state: RootState) => state.metadata);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked, files } = e.target;
 
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]:
-        type === "checkbox" ? checked : type === "file" ? files[0] : value,
-    }));
+    // setFormData((prev: questionType) => ({
+    //   ...prev,
+    //   [name]:
+    //     type === "checkbox" ? checked : type === "file" ? files?.[0] : value,
+    // }));
   };
 
   const grouped = Object.groupBy(data, (user) => user.part);
   const final = Object.entries(grouped);
 
   console.log(data, "data....");
-  const renderInput = (input: any) => {
+  const renderInput = (input: questionType) => {
     const name = input.type;
     const options = input.options;
 
@@ -37,15 +38,17 @@ export default function DynamicForm() {
           <textarea
             name={name}
             rows={4}
-            onChange={handleChange}
+            // onChange={handleChange}
             className={base}
           />
         );
 
       case "select":
         return (
-          <select name={name} onChange={handleChange} className={base}>
-            {options.map((op, i) => {
+          <select name={name}
+            // onChange={handleChange} 
+            className={base}>
+            {options?.map((op, i) => {
               console.log(op, "optionsss......");
               return (
                 <option key={op.id} value={op.option}>
@@ -59,7 +62,7 @@ export default function DynamicForm() {
       case "radio":
         return (
           <div className="flex gap-6 pt-2">
-            {options.map((g, i) => (
+            {options?.map((g) => (
               <label
                 key={g.id}
                 className="flex items-center gap-2 cursor-pointer"

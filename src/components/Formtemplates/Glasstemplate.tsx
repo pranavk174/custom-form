@@ -1,4 +1,5 @@
 import { RootState } from "@/redux/store";
+import { questionType } from "@/types/formtypes";
 
 import { useSelector } from "react-redux";
 
@@ -7,7 +8,7 @@ export default function GlassTemplate() {
   const grouped = Object.groupBy(data, (user) => user.part);
   const final = Object.entries(grouped);
 
-  const renderField = (input: any) => {
+  const renderField = (input: questionType) => {
     console.log(input.options, "input option...");
     switch (input.type) {
       case "textarea":
@@ -23,7 +24,7 @@ export default function GlassTemplate() {
         return (
           <select key={input.id} className="border p-3 rounded-lg w-full">
             <option value="">Select {input.question}</option>
-            {input.options?.map((opt: any, i: number) => (
+            {input.options?.map((opt) => (
               <option key={opt.id} value={opt.option}>
                 {opt.option}
               </option>
@@ -35,7 +36,7 @@ export default function GlassTemplate() {
         return (
           <div key={input.id}>
             <p className="mb-2">{input.question}</p>
-            {input.options?.map((opt, i) => (
+            {input.options?.map((opt) => (
               <label key={opt.id} className="mr-4">
                 <input type="radio" name={input.id} value={opt.option} />{" "}
                 {opt.option}
@@ -48,9 +49,9 @@ export default function GlassTemplate() {
         return (
           <div key={input.id}>
             <p className="mb-2">{input.question}</p>
-            {input.options?.map((opt: any, i: number) => (
-              <label key={i} className="mr-4">
-                <input type="checkbox" value={opt} /> {opt}
+            {input.options?.map((opt) => (
+              <label key={opt.id} className="mr-4">
+                <input type="checkbox" value={opt.option} /> {opt.option}
               </label>
             ))}
           </div>
@@ -71,8 +72,9 @@ export default function GlassTemplate() {
   return (
     <div className="max-w-4xl mx-auto bg-white/70 backdrop-blur-lg rounded-3xl p-10 shadow-xl">
       <h1 className="text-blue-500 font-bold text-3xl"> Glass Template </h1>
-      {final.map((p: any) => {
-        const sorted = Object.groupBy(p[1], (u: any) => u.section);
+      {final.map((p) => {
+        if (!p[1]) return
+        const sorted = Object.groupBy(p[1], (u) => u.section);
         const sections = Object.entries(sorted);
 
         return (
@@ -81,12 +83,12 @@ export default function GlassTemplate() {
               Part {p[0]}
             </h2>
 
-            {sections.map((s: any) => (
+            {sections.map((s) => (
               <div key={s[0]} className="bg-white rounded-xl shadow p-6 mb-6">
                 <h3 className="text-xl font-semibold mb-4">Section {s[0]}</h3>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                  {s[1].map((input: any) => renderField(input))}
+                  {s[1] && s[1].map((input) => renderField(input))}
                 </div>
               </div>
             ))}
