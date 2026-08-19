@@ -117,10 +117,14 @@ export default function Home() {
         </DragOverlay>
       </DndContext>
 
-      <div className="bg-red-500 h-[5vh]">
+      <div className=" flex justify-center items-center">
         <Link
           href="/Response"
-          onClick={() => {
+          className={`max-w-[200px] rounded-[10px] text-white text-center w-full ${data.length === 0 ? "pointer-events-none  opacity-50 mx-auto bg-black  py-2" : "bg-black py-2 text-white "}`}
+          onClick={(e) => {
+            if (data.length === 0) {
+              e.preventDefault();
+            }
             persistor.persist();
           }}
         >
