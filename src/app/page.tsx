@@ -1,66 +1,132 @@
-import Image from "next/image";
+"use client";
+import {
+  DndContext,
+  DragEndEvent,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+  DragStartEvent,
+} from "@dnd-kit/core";
+import { persistor } from "@/redux/store";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useEffect, useState } from "react";
+import Sidebar from "@/components/Sidebar";
+import Canvas from "@/components/Canvas";
+import { addField, reorderFields } from "@/redux/Slices/headerconnect";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function Home() {
+  const data = useSelector((state: RootState) => state.metadata);
+  const dispatch = useDispatch();
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const router = useRouter();
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(event.active.id as string);
+  }
+
+  useEffect(() => {
+    // persistor.purge();
+  }, []);
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    setActiveId(null);
+
+    if (!over) return;
+
+    // Check if dragging item is from sidebar or canvas
+    const isSidebarItem = active.data.current?.type === "sidebar-item";
+    const isCanvasItem = active.data.current?.type === "canvas-item";
+
+    // If it's a sidebar item, add new field
+    if (isSidebarItem) {
+      const type = active.data.current?.fieldType || (active.id as string);
+      const section = data[data.length - 1]?.section ?? "A";
+      const part = data[data.length - 1]?.part ?? 1;
+      const order = data[data.length - 1]?.order
+        ? data[data.length - 1]?.order + 1
+        : 1;
+
+      const newField = {
+        id: crypto.randomUUID(),
+        type,
+        part: part,
+        section: section,
+        order: order,
+      };
+      dispatch(addField(newField));
+      return;
+    }
+
+    // If it's a canvas item, reorder
+    if (isCanvasItem) {
+      const activeIndex = data.findIndex((item) => item.id === active.id);
+      const overIndex = data.findIndex((item) => item.id === over.id);
+
+      if (activeIndex !== -1 && overIndex !== -1 && activeIndex !== overIndex) {
+        const reordered = arrayMove(data, activeIndex, overIndex);
+        dispatch(reorderFields(reordered));
+      }
+    }
+  }
+
+  const activeItem = data.find((item) => item.id === activeId);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <Link
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="/Form"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </Link>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={data.map((item) => item.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex  h-[95vh] gap-6 p-6">
+            <Sidebar />
+            <Canvas fields={data} />
+          </div>
+        </SortableContext>
+        <DragOverlay>
+          {activeItem ? (
+            <div className="bg-gray-100 rounded-xl p-6 border-2 border-purple-500 shadow-lg opacity-80">
+              <div className="text-gray-700 font-medium">
+                {activeItem.type} field
+              </div>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+
+      <div className="bg-red-500 h-[5vh]">
+        <Link
+          href="/Response"
+          onClick={() => {
+            persistor.persist();
+          }}
+        >
+          Save
+        </Link>
+      </div>
     </div>
   );
 }
